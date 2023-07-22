@@ -1,8 +1,12 @@
 package com.xtwy.netty.handler;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xtwy.netty.client.DefaultFuture;
+import com.xtwy.netty.client.Response;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.AttributeKey;
+
 
 public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 	@Override
@@ -12,7 +16,10 @@ public class SimpleClientHandler extends ChannelInboundHandlerAdapter {
 			return ;
 		}
 		
-		ctx.channel().attr(AttributeKey.valueOf("sss")).set(msg);
+		Response response =JSONObject.parseObject(msg.toString(),Response.class);
+		DefaultFuture.receive(response);
+		
+		//ctx.channel().attr(AttributeKey.valueOf("sss")).set(msg);
 		//ctx.channel().close();
 	}
 

@@ -1,5 +1,9 @@
 package com.xtwy.netty.handler;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xtwy.netty.client.Response;
+import com.xtwy.netty.handler.param.ServerRequest;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
@@ -9,7 +13,14 @@ public class SimpleServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		ctx.channel().writeAndFlush("is ok\r\n");
+//		ctx.channel().writeAndFlush("is ok\r\n");
+		ServerRequest request= JSONObject.parseObject(msg.toString(),ServerRequest.class);
+		
+		Response resp =new Response();
+		resp.setId(request.getId());
+		resp.setResult("is ok");
+		ctx.channel().writeAndFlush(JSONObject.toJSONString(resp));
+		ctx.channel().writeAndFlush("\r\n");
 	}
 	
 	@Override
